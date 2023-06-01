@@ -1,13 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
-
+import httpx
+import asyncio
 
 #This function takes a URL as an argument and collects all the links from the URL
 #and put them in a list which then is "cleaned" of any eventual nonetypes.
 #it then edits any links that arte incomplete and then returns the list.
-def get_links(adress):
+async def get_links(adress):
     
-    r = requests.get(adress)
+    r = httpx.get(adress)
     soup = BeautifulSoup(r.text, 'html.parser')
     links_array = []
     for link in soup.find_all("a"):
@@ -26,8 +27,8 @@ def get_links(adress):
 #get_text() takes two arguments, a URL and a file name.
 #It connects to the website and downloads all the text to a file with the 
 #specified file name. 
-def get_text(adress, file_name):
-    r = requests.get(adress)
+async def get_text(adress, file_name):
+    r = httpx.get(adress)
     soup = BeautifulSoup(r.text, 'html.parser')
     with open (file_name, 'w', encoding = "utf-8") as fout:
         fout.write(soup.get_text())

@@ -1,22 +1,23 @@
 from handle_requests import get_links
 from handle_requests import get_text
 import sys
-import os 
+import os
+import asyncio
 
 #The main function checks for an argument that was passed along with the calling of the script.
 #if this argument is a file it then read each line from the file and passes it to the 
 # collect_text() function. If not it treats the argument as a URL and passes only that to the collect_text() function
-def main():
+async def main():
     adress_name = sys.argv[1]
     if os.path.exists(str(os.getcwd()) + "/" + adress_name):
         with open(adress_name) as fin:
             for line in fin:
                 print(line)
                 line = line.strip("\n")
-                collect_text(line)
+                await collect_text(line)
 
     else:
-        collect_text(adress_name) 
+       await collect_text(adress_name) 
 
 
 
@@ -27,23 +28,23 @@ def main():
 #get_links() function. This isn't the best solution since it allows links with https further into the URL 
 #to slip through the detection and can cause an error, however it's unlikely.
 
-def collect_text(adress_name):
+async def collect_text(adress_name):
 
-    links_array = get_links(adress_name)
+    links_array = await get_links(adress_name)
     current_dir = os.getcwd()
     new_dir = current_dir + "/collected_texts/"
     path = os.makedirs(new_dir, exist_ok=True)
     file_name = adress_name.split(".", 1)
     file_name = str(adress_name[1])
     links_array = set(links_array)
-    get_text(adress_name, file_name) 
+    await get_text(adress_name, file_name) 
     for link in links_array:
         print(link)
         text_name = os.path.join(new_dir, link.replace("/","") +".txt")
         if "https" in link:
-            get_text(link, text_name)
+           await get_text(link, text_name)
 
 
 if __name__ == '__main__':
         
-    main()
+    asyncio.run(main())

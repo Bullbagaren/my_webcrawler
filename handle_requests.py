@@ -1,13 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 import httpx
-import asyncio
 import os
-import functools
 #This function takes a URL as an argument and collects all the links from the URL
 #and put them in a list which then is "cleaned" of any eventual nonetypes.
 #it then edits any links that arte incomplete and then returns the list.
-async def get_links(adress):
+def get_links(adress):
     
     r = httpx.get(adress)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -30,7 +28,7 @@ async def get_links(adress):
 #specified file name. 
 
 
-async def get_text(adress):
+def get_text(adress):
     if "https" in adress:
         r = httpx.get(adress)
         soup = BeautifulSoup(r.text, 'html.parser')
